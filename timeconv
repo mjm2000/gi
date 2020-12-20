@@ -1,0 +1,26 @@
+#!/bin/sh
+function ts_s() {
+    seconds=${1##*:}
+    hour_min=${1%:*}
+    minutes=$(( ${hour_min##*:} ))
+    hours=0
+    if [[ "$hour_min" == *":"* ]]; then
+        hours=$(( ${hour_min%:*} ))
+    fi 
+    echo $(($hours * 360 +  $minutes * 60  )) + $seconds | bc
+}
+function s_ts(){
+    a=$1
+    secs=$(echo "$a % 60" | bc)
+    mins=$(echo "$a / 60" | bc )
+    hours=$(echo "$a / 360" | bc)
+    echo "${hours}:${mins}:${secs}"
+}
+case $1 in 
+    "-s")
+        ts_s $2
+        ;;
+    "-ts")
+        s_ts $2
+        ;;
+esac
